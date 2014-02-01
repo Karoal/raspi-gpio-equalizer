@@ -116,8 +116,6 @@ for val in avg_values:
     num = int(round(8 * val / maximum))
 
     # TTY output
-    print("{0:20} | {1:20} sec | {2}".format(str('#' * num) + ">"),
-          avg_values.index(val) / fouriers_per_second,
-          val)
+    print("{0:20} sec | {1}".format(avg_values.index(val) / fouriers_per_second, val))
     for led in range(len(pins)):
         gpio.output(pins[led], 1 if led <= num else 0)
