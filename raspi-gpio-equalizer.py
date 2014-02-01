@@ -119,3 +119,5 @@ for val in avg_values:
     print("{0:20} sec | {1}".format(avg_values.index(val) / fouriers_per_second, val))
     for led in range(len(pins)):
         gpio.output(pins[led], 1 if led <= num else 0)
+
+    time.sleep(1 / fouriers_per_second)
