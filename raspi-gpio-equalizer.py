@@ -7,6 +7,8 @@ from pygame import mixer
 import time
 import RPi.GPIO as gpio
 
+pins = (22, 18, 16, 15, 13, 12, 11, 7)
+
 filename = sys.argv[1]
 low = int(sys.argv[2])              # Lowest frequency bound for the band
 high = int(sys.argv[3])             # Highest frequency bound for the band
@@ -94,18 +96,28 @@ for offset in range(0, total_transforms):
 
     avg_values.append(avg)
 
-print(len(avg_values)*fouriers_per_second)
-print("Max:", maximum)
-time.sleep(3)
+print("Number of cycles:", len(avg_values)*fouriers_per_second)
+print("Maximum value:", maximum)
+time.sleep(2)
 
+# Initialises gpio pins
+gpio.setmode(gpio.BOARD)
+for pin in pins:
+    gpio.setup(pin, gpio.OUT)
+    gpio.output(pin, 0)
+
+# Initialises sound
 mixer.init()
 mixer.music.load(filename)
 mixer.music.play()
 
 for val in avg_values:
+    # num = number of highest lit LED
+    num = int(round(8 * val / maximum))
 
-for val in avg_values:
-    print("{0:20} | {1:20} sec | {2}".format(str('#' * int(round(8 * val/maximum)) + ">"),
-                                             avg_values.index(val) / fouriers_per_second,
-                                             val))
-    time.sleep(1 / fouriers_per_second)
+    # TTY output
+    print("{0:20} | {1:20} sec | {2}".format(str('#' * num) + ">"),
+          avg_values.index(val) / fouriers_per_second,
+          val)
+    for led in range(len(pins)):
+        gpio.output(pins[led], 1 if led <= num else 0)
