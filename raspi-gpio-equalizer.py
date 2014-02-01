@@ -35,7 +35,7 @@ if __name__ == '__main__':
     sound_data = struct.unpack(unpack_fmt, sound_data)
 
     # Process many samples
-    fouriers_per_second = 10
+    fouriers_per_second = 100
     fourier_spread = 1/fouriers_per_second
     fourier_width = fourier_spread
     fourier_width_index = fourier_width * float(sample_rate)
