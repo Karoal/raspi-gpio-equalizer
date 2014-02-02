@@ -111,18 +111,18 @@ mixer.init()
 mixer.music.load(filename)
 mixer.music.play()
 
-for val in range(int(len(avg_values)/4)):
+for val in range(int(len(avg_values)/2)):
     # takes the average over 4 values
     average = 0
-    for x in range(4): average += avg_values[(val*4) + x]
+    for x in range(2): average += avg_values[(val*2) + x]
     average /= 4
 
     # num = number of highest lit LED
     num = int(round(8 * average / maximum))
 
     # TTY output
-    print("{0:20} sec | {1}".format(val * 4 / fouriers_per_second, val))
+    print("{0:20} sec | {1}".format(val * 2 / fouriers_per_second, val))
     for led in range(len(pins)):
         gpio.output(pins[led], 1 if led <= num else 0)
 
-    time.sleep(4 / fouriers_per_second)
+    time.sleep(2 / fouriers_per_second)
