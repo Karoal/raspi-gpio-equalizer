@@ -115,10 +115,10 @@ for val in range(int(len(avg_values)/2)):
     # takes the average over 4 values
     average = 0
     for x in range(2): average += avg_values[(val*2) + x]
-    average /= 4
+    average /= 2
 
     # num = number of highest lit LED
-    num = int(round(8 * average / maximum))
+    num = int(round(8 * average / (maximum * 0.75)))
 
     # TTY output
     print("{0:20} sec | {1}".format(val * 2 / fouriers_per_second, val))
