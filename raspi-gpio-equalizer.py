@@ -118,7 +118,7 @@ for val in range(int(len(avg_values)/2)):
     average /= 2
 
     # num = number of highest lit LED
-    num = int(round(8 * average / (maximum * 0.75)))
+    num = int(round(8 * average / (maximum * 0.90)))
 
     # TTY output
     print("{0:20} sec | {1}".format(val * 2 / fouriers_per_second, val))
