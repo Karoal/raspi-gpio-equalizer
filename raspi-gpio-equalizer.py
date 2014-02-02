@@ -7,6 +7,7 @@ import sys
 import numpy as np
 # import math
 from pygame import mixer
+import pygame.time as pytime
 import time
 import RPi.GPIO as gpio
 
@@ -114,6 +115,9 @@ mixer.init()
 mixer.music.load(filename)
 mixer.music.play()
 
+# Initialises time
+clock = pytime.Clock()
+
 for val in range(int(len(avg_values)/1)):
     # takes the average over 4 values
     average = 0
@@ -128,7 +132,5 @@ for val in range(int(len(avg_values)/1)):
     for led in range(len(pins)):
         gpio.output(pins[led], 1 if led <= num else 0)
 
-    stop = time.time() + ( 1 / fouriers_per_second )
-    while time.time() < stop:
-        pass
+    clock.tick(fouriers_per_second)
     # time.sleep(1 / fouriers_per_second)
