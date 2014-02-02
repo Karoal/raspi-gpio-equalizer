@@ -35,7 +35,7 @@ if __name__ == '__main__':
     sound_data = struct.unpack(unpack_fmt, sound_data)
 
     # Process many samples
-    fouriers_per_second = 100
+    fouriers_per_second = 20
     fourier_spread = 1/fouriers_per_second
     fourier_width = fourier_spread
     fourier_width_index = fourier_width * float(sample_rate)
@@ -111,13 +111,18 @@ mixer.init()
 mixer.music.load(filename)
 mixer.music.play()
 
-for val in avg_values:
+for val in range(len(avg_values)/4):
+    # takes the average over 4 values
+    average = 0
+    for x in range(4): average += avg_values[(val*4) + x]
+    average /= 4
+
     # num = number of highest lit LED
-    num = int(round(8 * val / maximum))
+    num = int(round(8 * average / maximum))
 
     # TTY output
     print("{0:20} sec | {1}".format(avg_values.index(val) / fouriers_per_second, val))
     for led in range(len(pins)):
         gpio.output(pins[led], 1 if led <= num else 0)
 
-    time.sleep(1 / fouriers_per_second)
+    time.sleep(4 / fouriers_per_second)
