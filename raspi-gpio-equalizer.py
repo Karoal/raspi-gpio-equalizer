@@ -111,7 +111,7 @@ mixer.init()
 mixer.music.load(filename)
 mixer.music.play()
 
-for val in range(len(avg_values)/4):
+for val in range(int(len(avg_values)/4)):
     # takes the average over 4 values
     average = 0
     for x in range(4): average += avg_values[(val*4) + x]
