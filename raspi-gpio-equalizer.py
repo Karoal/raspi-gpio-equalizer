@@ -1,3 +1,6 @@
+# Equalizer for 8 LEDs connected through Raspberry Pi GPIO
+# Kinda works, for fuck's sake
+
 import wave
 import struct
 import sys
@@ -111,18 +114,18 @@ mixer.init()
 mixer.music.load(filename)
 mixer.music.play()
 
-for val in range(int(len(avg_values)/2)):
+for val in range(int(len(avg_values)/1)):
     # takes the average over 4 values
     average = 0
-    for x in range(2): average += avg_values[(val*2) + x]
-    average /= 2
+    for x in range(1): average += avg_values[(val*1) + x]
+    average /= 1
 
     # num = number of highest lit LED
     num = int(round(8 * average / (maximum * 0.90)))
 
     # TTY output
-    print("{0:20} sec | {1}".format(val * 2 / fouriers_per_second, val))
+    print("{0:20} sec | {1}".format(val * 1 / fouriers_per_second, val))
     for led in range(len(pins)):
         gpio.output(pins[led], 1 if led <= num else 0)
 
-    time.sleep(2 / fouriers_per_second)
+    time.sleep(1 / fouriers_per_second)
