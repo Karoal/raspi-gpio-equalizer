@@ -139,9 +139,9 @@ for val in range(total_transforms):
     led_num = int(round(9 * fourier_avg / (maximum * 0.9)))
 
     # TTY output
-    print("{0:11} | {1:5} , {2:6} sec | fourier: {3:10} , maximum: {4}".format('#' * led_num + '>', val,
-                                                                               round(val / fouriers_per_second, 3),
-                                                                               int(fourier_avg), round(maximum)))
+    print("{0:11} | {1:5}, {2:6} sec | fourier: {3:10}, max: {4}".format('#' * led_num + '>', val,
+                                                                         round(val / fouriers_per_second, 3),
+                                                                         int(fourier_avg), round(maximum)))
 
     # GPIOs
     for led in range(len(pins)):
