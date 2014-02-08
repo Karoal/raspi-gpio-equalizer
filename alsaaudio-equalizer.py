@@ -18,8 +18,8 @@ else:
 pins = (22, 18, 16, 15, 13, 12, 11, 7)
 
 filename = sys.argv[1]
-low = int(sys.argv[2])              # Lowest frequency bound for the band
-high = int(sys.argv[3])             # Highest frequency bound for the band
+low_freq = int(sys.argv[2])              # Lowest frequency bound for the band
+high_freq = int(sys.argv[3])             # Highest frequency bound for the band
 
 
 if __name__ == '__main__':
@@ -80,7 +80,7 @@ def freqToIndex(f):
     return index
 
 
-def fourier(transform_n, maximum):
+def fourier(transform_n, maximum, low=low_freq, high=high_freq):
     # List to be fft'ed
     start = int(transform_n * sample_size)
     end = int((transform_n * sample_size) + sample_size - 1)
