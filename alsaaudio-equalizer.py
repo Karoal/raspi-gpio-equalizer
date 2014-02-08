@@ -6,17 +6,21 @@ import struct
 import sys
 import numpy as np
 # import math
-
 import time
-import RPi.GPIO as gpio
-
 import alsaaudio
+
+if "-nopi" in sys.argv:
+    NO_PI = True
+else:
+    NO_PI = False
+    import RPi.GPIO as gpio
 
 pins = (22, 18, 16, 15, 13, 12, 11, 7)
 
 filename = sys.argv[1]
 low = int(sys.argv[2])              # Lowest frequency bound for the band
 high = int(sys.argv[3])             # Highest frequency bound for the band
+
 
 if __name__ == '__main__':
     # Gets info
@@ -118,10 +122,11 @@ print("Period size:", periodsize)
 device.setperiodsize(periodsize)
 
 # Initialises gpio pins
-gpio.setmode(gpio.BOARD)
-for pin in pins:
-    gpio.setup(pin, gpio.OUT)
-    gpio.output(pin, 0)
+if NO_PI == False:
+    gpio.setmode(gpio.BOARD)
+    for pin in pins:
+        gpio.setup(pin, gpio.OUT)
+        gpio.output(pin, 0)
 
 # Opens file again for reading
 wav = wave.open(filename, 'rb')
@@ -139,13 +144,13 @@ for val in range(total_transforms):
     led_num = int(round(9 * fourier_avg / (maximum * 0.9)))
 
     # TTY output
-    print("{0:11} | {1:5}, {2:6} sec | fourier: {3:10}, max: {4}".format('#' * led_num + '>', val,
+    print("{0:11} | {1:5}, {2:7} sec | fourier: {3:10}, max: {4}".format('#' * led_num + '>', val,
                                                                          round(val / fouriers_per_second, 3),
                                                                          int(fourier_avg), round(maximum)))
-
     # GPIOs
-    for led in range(len(pins)):
-        gpio.output(pins[led], 1 if led < led_num else 0)
+    if NO_PI == False:
+        for led in range(len(pins)):
+            gpio.output(pins[led], 1 if led < led_num else 0)
 
     # Sound output
     device.write(data)
