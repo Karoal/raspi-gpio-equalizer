@@ -35,6 +35,8 @@ if __name__ == '__main__':
     wav.close()
 
     # Unpacks binary data into array
+    print(data_size)
+    print(type(sound_data))
     unpack_fmt = '%di' % (data_size)
     sound_data = struct.unpack(unpack_fmt, sound_data)
 
@@ -75,27 +77,33 @@ def freqToIndex(f):
     index = round(sample_size * fraction)
     return index
 
+avg_values = []
+maximum = 0
 
-def fourier(transform_n, maximum):
-    # List to be fft'ed
-    start = int(transform_n * sample_size)
-    end = int((transform_n * sample_size) + sample_size - 1)
+for offset in range(0, total_transforms):
+    start = int(offset * sample_size)
+    end = int((offset * sample_size) + sample_size - 1)
     sample_range = sound_data[start:end]
 
-    # Carries out fft
+    # fft_data = np.fft.fft(sample_range)
     fft_data = abs(np.fft.fft(sample_range))
+    # fft_data = [math.log10(x) for x in fft_data]
+    # fft_data *= (2**(0.5) / sample_size)
 
-    # Finds mean across desired frequency range
     lowBound = freqToIndex(low)
     hiBound = freqToIndex(high)
     avg = sum(fft_data[lowBound:hiBound]) / (hiBound - lowBound)
 
-    # Making data more readable
+    print(offset / fouriers_per_second, ' s')
+    print(avg, '\n')
     # print(math.log10(avg), '\n')
     avg *= (2**0.5) / sample_size
     if avg > maximum: maximum = avg
 
-    return avg, maximum
+    avg_values.append(avg)
+
+print("Number of cycles:", len(avg_values)*fouriers_per_second)
+print("Maximum value:", maximum)
 
 # Starts ALSA device
 device = alsaaudio.PCM(card='default')
@@ -127,25 +135,18 @@ for pin in pins:
 wav = wave.open(filename, 'rb')
 data = wav.readframes(periodsize)
 
-# Maximum value of the average so far, used for normalising
-maximum = 10000000
-
 time.sleep(2)
 
-for val in range(total_transforms):
-    fourier_avg, maximum = fourier(val, maximum)
-
-    # led_num = number of highest lit LED
-    led_num = int(round(9 * fourier_avg / (maximum * 0.9)))
+for val in range(len(avg_values)):
+    # num = number of highest lit LED
+    num = int(round(8 * avg_values[val] / (maximum * 0.90)))
 
     # TTY output
-    print("{0:11} | {1:5} , {2:6} sec | fourier: {3:10} , maximum: {4}".format('#' * led_num + '>', val,
-                                                                               round(val / fouriers_per_second, 3),
-                                                                               int(fourier_avg), round(maximum)))
+    print("{0:20} | {1:18} sec | {2}".format('#' * num + '>', val * 1 / fouriers_per_second, val))
 
     # GPIOs
     for led in range(len(pins)):
-        gpio.output(pins[led], 1 if led < led_num else 0)
+        gpio.output(pins[led], 1 if led <= num else 0)
 
     # Sound output
     device.write(data)
