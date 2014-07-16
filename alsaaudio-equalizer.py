@@ -1,6 +1,5 @@
 # Equalizer for 8 LEDs connected through Raspberry Pi GPIO
-# Kinda works, for fuck's sake
-
+# Works (mostly)
 import wave
 import struct
 import sys
